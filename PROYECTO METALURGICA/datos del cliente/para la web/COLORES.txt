@@ -1,0 +1,4 @@
+amarillo: #FFD51E
+gris: #201E1E
+negro
+blanco

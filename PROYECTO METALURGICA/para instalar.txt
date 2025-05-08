@@ -1,0 +1,9 @@
+instalar pip install tkinter, pyinstall, fpdf
+pyinstaller --onefile --noconsole tu_archivo.py con esto se genera el .exe
+
+pyinstaller --onefile --noconsole  factura.py
+rmdir /s /q build
+rmdir /s /q __pycache__
+move dist\generador_recibos.exe .
+rmdir /s /q dist
+esto lo hace mas clean
