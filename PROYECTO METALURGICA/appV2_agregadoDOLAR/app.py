@@ -14,8 +14,8 @@ class ReciboFactura:
         self.__root.configure()
         self.__root.title("Recibo de Factura")
         self.__root.resizable(False, False)
-        ancho_ventana = 600
-        alto_ventana = 750
+        self.ancho_ventana = 600
+        self.alto_ventana = 605
         self.__medidasyprecios = []
         root.iconbitmap(os.path.join(os.path.dirname(__file__), 'logo_monocromatico.ico'))
         set_appearance_mode("system")  # Modo claro/oscuro
@@ -24,9 +24,9 @@ class ReciboFactura:
         alto_pantalla = self.__root.winfo_screenheight()
         set_appearance_mode("dark")  # Modo claro/oscuro
         # Calcular coordenadas para centrar
-        x = int((ancho_pantalla / 2) - (ancho_ventana / 2))
-        y = int((alto_pantalla / 2) - (alto_ventana / 2))
-        self.__root.geometry(f"{ancho_ventana}x{alto_ventana}+{x}+{y}")
+        x = int((ancho_pantalla / 2) - (self.ancho_ventana / 2))
+        y = int((alto_pantalla / 2) - (self.alto_ventana / 2))
+        self.__root.geometry(f"{self.ancho_ventana}x{self.alto_ventana}+{x}+{y}")
 
         # Frame principal para navegación
         self.frame_nav = CTkFrame(root, bg_color="transparent", height=60)
@@ -49,32 +49,32 @@ class ReciboFactura:
         
         # Contenido del frame de inicio
         imagen = Image.open(os.path.join(os.path.dirname(__file__), 'fondoapp.png'))
-        imagen_ctk = CTkImage(light_image=imagen,dark_image=imagen,size=(600, 750))
+        imagen_ctk = CTkImage(light_image=imagen,dark_image=imagen,size=(self.ancho_ventana, self.alto_ventana))
         CTkLabel(self.frame_inicio, image=imagen_ctk,text="" ).pack(ipady=0.5)
 
         # Contenido del frame de presupuesto
         self.campos = {}
-        for campo in ["Nombre del Cliente", "Numero de Teléfono del Cliente","Descripcion", "Ancho (en metros)", "Largo (en metros)","Cantidad de la medida"]:
-            if campo == "Descripcion":
-                CTkLabel(self.frame_presupuesto, text=campo + ":").pack(pady=5)
-                entrada = CTkEntry(self.frame_presupuesto, width=300)
-                entrada.pack(pady=5)
-                self.campos[campo] = entrada
-            else:
-                CTkLabel(self.frame_presupuesto, text=campo + ":").pack(pady=5)
-                entrada = CTkEntry(self.frame_presupuesto, width=300)
-                entrada.pack(pady=5)
-                self.campos[campo] = entrada
+        for campo in ["Nombre del Cliente", "Numero de Teléfono del Cliente", "Descripcion", "Ancho (en metros)", "Largo (en metros)", "Cantidad de la medida", "Precio de la medida ingresada"]:
+            subframe = CTkFrame(self.frame_presupuesto, fg_color="transparent")  # marco transparente
+            subframe.pack(pady=15, anchor="center", fill="x")  # centrado y ocupa todo el ancho
+            label = CTkLabel(subframe, text=campo + ":", width=200, anchor="e")  # ancho fijo y texto alineado a la derecha
+            label.pack(side="left", padx=10)
+            entrada = CTkEntry(subframe, width=300)
+            entrada.pack(side="left", padx=5)
+            self.campos[campo] = entrada
             
-        CTkLabel(self.frame_presupuesto, text="Precio de la medida ingresada:").pack(pady=5)
-        self.entrymedida = CTkEntry(self.frame_presupuesto, width=300)
-        self.entrymedida.pack(pady=5)
+        #boton para cargar medida y precio
         CTkButton(self.frame_presupuesto,hover_color=color_hover,text_color="black",fg_color=color_boton, text="Agregar medida", command=lambda: self.agregar_medida()).pack(pady=10)
         
-        self.opcion_aluminio = CTkCheckBox(self.frame_presupuesto, text="Persiana de Aluminio",fg_color=color_boton)
-        self.opcion_aluminio.pack(pady=5)
-        self.opcion_metalica = CTkCheckBox(self.frame_presupuesto, text="Persiana Metalica",fg_color=color_boton)
-        self.opcion_metalica.pack(pady=5)
+        #checkbox para seleccionar tipo de persiana
+        subframe_checkboxes = CTkFrame(self.frame_presupuesto,fg_color="transparent")
+        subframe_checkboxes.pack(pady=10, anchor="center")
+        self.opcion_aluminio = CTkCheckBox(subframe_checkboxes, text="Persiana de Aluminio", fg_color=color_boton,hover_color=color_hover)
+        self.opcion_aluminio.pack(side="left", padx=10)
+        self.opcion_metalica = CTkCheckBox(subframe_checkboxes, text="Persiana Metálica", fg_color=color_boton,hover_color=color_hover)
+        self.opcion_metalica.pack(side="left", padx=10)
+
+
         CTkButton(self.frame_presupuesto,hover_color=color_hover,text_color="black",fg_color=color_boton, text="Calcular Presupuesto", command=lambda: self.calcular_presupuesto()).pack(pady=10)
     def agregar_medida(self):
         try:
@@ -82,13 +82,13 @@ class ReciboFactura:
             largo = self.campos["Largo (en metros)"].get().replace(".",",")
             cantidad = int(self.campos["Cantidad de la medida"].get())
             medida = f"{ancho}x{largo}"
-            precio = float(self.entrymedida.get())
+            precio = float(self.campos["Precio de la medida ingresada"].get())
             self.__medidasyprecios.append((cantidad,medida,precio))
             #self.campos["Precio de la Mano de Obra"].delete(0, 'end')
             self.campos["Ancho (en metros)"].delete(0, 'end')
             self.campos["Largo (en metros)"].delete(0, 'end')
             self.campos["Cantidad de la medida"].delete(0, 'end')
-            self.entrymedida.delete(0, 'end')
+            self.campos["Precio de la medida ingresada"].delete(0, 'end')
             messagebox.showinfo("Medida Agregada", f"Medida agregada: {medida}")
         except ValueError:
             messagebox.showerror("Error", "Por favor, ingrese valores válidos.")

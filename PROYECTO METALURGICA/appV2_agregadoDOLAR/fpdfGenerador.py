@@ -16,6 +16,7 @@ def generar_pdf(nombre, telefono,tipo_persiana,desc,arreglo_medidasP):
             ValorDolar = data["venta"]  
         else:
             print("Error al obtener los datos:", response.status_code)
+            
         pdf = FPDF(orientation="P", unit="mm", format="A4")
         pdf.add_page()
         pdf.set_font("Arial",style="B", size=30)
@@ -40,8 +41,10 @@ def generar_pdf(nombre, telefono,tipo_persiana,desc,arreglo_medidasP):
         pdf.cell(0, 10, txt=f"VALOR DOLAR: ${ValorDolar}", ln=True)
         #TABLA
         #cell(w, h, text, border, ln, align, fill): w: Ancho (0 = automático). h: Altura. border: 0=sin borde, 1=con borde. ln: 0=continuar en misma línea, 1=salto de línea. align: 'L' (izquierda), 'C' (centro), 'R' (derecha).fill: True para fondo coloreado.
-        pdf.set_draw_color(255, 213, 30) # Color de borde
-        pdf.set_fill_color(192,192,192) # Color de fondo
+        
+        #pdf.set_draw_color(255, 213, 30) # Color de borde
+        pdf.set_fill_color(255, 213, 30) # Color de fondo
+        
         pdf.cell(100, 10, "Descripcion",1, 0, 'C',True)
         pdf.cell(20, 10, "Cantidad", 1, 0, 'C',True)
         pdf.cell(25, 10, "Medidas", 1, 0, 'C',True)
@@ -72,7 +75,7 @@ def generar_pdf(nombre, telefono,tipo_persiana,desc,arreglo_medidasP):
         #calculo total
         Total_30Porc =  (30/100)*total
         Total_70Porc =  (70/100)*total
-        pdf.ln(5)
+        pdf.ln(15)
         x = pdf.get_x()
         y = pdf.get_y()
         pdf.cell(100,10,"",0,0,'L')
@@ -87,7 +90,7 @@ def generar_pdf(nombre, telefono,tipo_persiana,desc,arreglo_medidasP):
         pdf.cell(100,10,"OBSERVACIONES: Precio sin IVA",0,0,'L')
         pdf.set_xy(x + 100, y)  # Posicionar para siguientes celdas
         pdf.cell(20,10,"70%:",1,0,'C',True)
-        pdf.cell(25,10,f"${Total_70Porc}",1,0,'C')
+        pdf.cell(25,10,f"${Total_70Porc:.2f}",1,0,'C')
         pdf.cell(30,10,f"${(Total_70Porc/ValorDolar):.2f}",1,1,'C')
         
         x = pdf.get_x()
@@ -95,7 +98,7 @@ def generar_pdf(nombre, telefono,tipo_persiana,desc,arreglo_medidasP):
         pdf.cell(100,10,"DEMORA DE ENTREGA: A acordar con el comprador",0,0,'L')
         pdf.set_xy(x + 100, y)  # Posicionar para siguientes celdas
         pdf.cell(20,10,"30%:",1,0,'C',True)
-        pdf.cell(25,10,f"${Total_30Porc}",1,0,'C')
+        pdf.cell(25,10,f"${Total_30Porc:.2f}",1,0,'C')
         pdf.cell(30,10,f"${(Total_30Porc/ValorDolar):.2f}",1,1,'C')
         
         x = pdf.get_x()
@@ -109,7 +112,7 @@ def generar_pdf(nombre, telefono,tipo_persiana,desc,arreglo_medidasP):
         #Indicaciones finales
         pdf.ln(10)
         pdf.set_font("Arial", size=10)
-        pdf.set_text_color(255, 213, 30)
+        pdf.set_text_color(143, 143, 143)
         pdf.multi_cell(0,4,"1_En el inicio del trabajo se solicita un adelanto, porcentaje sujeto según el trabajo a realizar. (aclarado en el presente documento.)",0,0,'C')
         pdf.ln(3)
         pdf.multi_cell(0,4,"2_El presupuesto y saldo son basados en las medidas iniciales (NO FINALES), por lo tanto, el presente es APROXIMADO y quedan sujetos a modificaciones al tomarse las medidas definitivas y herrajes adicionales de ser necesario, dicha modificación será sumada o restada del saldo final.)",0,0,'C')
@@ -121,10 +124,10 @@ def generar_pdf(nombre, telefono,tipo_persiana,desc,arreglo_medidasP):
         pdf.multi_cell(0,4,"5_El saldo final debe ser cancelado dentro de las 24hs de la finalización del trabajo, caso contrario sufrirá un incremento del 5% diario.)",0,0,'C')
         pdf.ln(3)
         pdf.cell(0, 10, "¡GRACIAS POR ELEGIRNOS!!!", ln=True, align='C')
-        pdf.ln(3)
+        #pdf.ln(2)
         pdf.set_font("Arial","B", size=10)
         pdf.cell(0, 10, "CORTINERA SAN JUAN  -  Teléfono: 264154657764  -  Email: cortineriasanjuan@gmail.com", ln=True, align='C')
-        pdf.ln(3)
+        #pdf.ln(2)
         pdf.cell(0, 10, "Direccion: Av. Ignacio de la Roza 1826 (o)", ln=True, align='C')
         # Guardar el PDF
         nombre_archivo = filedialog.asksaveasfilename(
